@@ -1,8 +1,8 @@
 package de.anshaana.playground.infrastructure.chatgpt.repository;
 
 import com.google.gson.JsonObject;
+import de.anshaana.playground.infrastructure.chatgpt.configuration.ChatGptSettings;
 import de.anshaana.playground.infrastructure.chatgpt.models.ChatGptResponse;
-import de.anshaana.playground.infrastructure.configuration.ChatGptSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
