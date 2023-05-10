@@ -25,7 +25,7 @@ public class WebClientConfiguration {
         HttpClient httpClient = HttpClient.from(TcpClient.create().wiretap(webClientSettings.isWiretapEnabled())
             .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, webClientSettings.getConnectionTimeout())
             .doOnConnected(connection -> connection.addHandlerLast(new ReadTimeoutHandler(webClientSettings.getConnectionTimeout()))))
-            .doOnRequest((httpClientRequest, connection) -> connection.addHandlerFirst(new WebClientLoggingHandler()))
+            .doOnRequest((httpClientRequest, connection) -> connection.addHandlerFirst(new WebClientLoggingHandler())) //this does the logging
             ;
         return  WebClient.builder()
             .exchangeStrategies(exchangeStrategies())
