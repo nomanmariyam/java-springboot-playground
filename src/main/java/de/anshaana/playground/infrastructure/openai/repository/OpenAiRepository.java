@@ -3,6 +3,7 @@ package de.anshaana.playground.infrastructure.openai.repository;
 import com.google.gson.JsonObject;
 import de.anshaana.playground.infrastructure.chatgpt.configuration.ChatGptSettings;
 import de.anshaana.playground.infrastructure.chatgpt.models.ChatGptResponse;
+import de.anshaana.playground.infrastructure.chatgpt.models.EmbeddingResponse;
 import de.anshaana.playground.infrastructure.incoming.AiRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,5 +52,27 @@ public class OpenAiRepository implements AiRepository {
                     return Mono.just(chatGptResponse);
                 });
         return chatGptResponseMono.block();
+    }
+
+    public Mono<EmbeddingResponse> embeddings(String input) {
+        JsonObject requestBodyJson = new JsonObject();
+        requestBodyJson.addProperty("input", input);
+        requestBodyJson.addProperty("model", chatGptSettings.getEmbeddingModel());
+
+        return webClient
+                .post()
+                .uri(chatGptSettings.getBaseUrl() + "/embeddings")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + chatGptSettings.getApiKey())
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(requestBodyJson.toString()))
+                .retrieve()
+                .bodyToMono(EmbeddingResponse.class)
+                .onErrorResume(e -> {
+                    log.error("error while processing the request for question {}", input, e);
+                    String errorMessage = "An error occurred while processing the request: " + e.getMessage();
+                    EmbeddingResponse chatGptResponse = new EmbeddingResponse();
+                    chatGptResponse.setErrorMessage(errorMessage);
+                    return Mono.just(chatGptResponse);
+                });
     }
 }
