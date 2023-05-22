@@ -1,6 +1,7 @@
 package de.anshaana.playground.collection;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -94,7 +95,28 @@ public class StreamApiExamples {
 
         System.out.println("Concatenated List: " + concatenatedList);
     }
+
+    public void concatAndSortList() {
+        List<Student> studentsList1 = List.of(
+                new Student(1, "Biden"),
+                new Student(2, "Trump"),
+                new Student(3, "Musk")
+        );
+
+        List<Student> studentsList2 = List.of(
+                new Student(1, "Biden"),
+                new Student(4, "Putin"),
+                new Student(5, "Sunak")
+        );
+
+        List<Student> concatenatedList = Stream.concat(studentsList1.stream(), studentsList2.stream())
+                .sorted(Comparator.comparing(Student::getName, Comparator.nullsLast(Comparator.naturalOrder())))
+                .collect(Collectors.toList());
+
+        System.out.println("Concatenated List: " + concatenatedList);
+    }
 }
+
 
 
 class Student {
